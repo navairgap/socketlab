@@ -26,3 +26,6 @@ Each experiment is its own folder with a README and repro steps.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+---
+maintained · verified 2026-09-30
