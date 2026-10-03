@@ -29,3 +29,7 @@ MIT, see [LICENSE](LICENSE).
 
 ---
 maintained · verified 2026-09-30
+
+## Protocol notes
+
+socketlab speaks plain length-prefixed frames over TCP: a 4-byte big-endian length header followed by the payload. No handshake, no auth — it's a test bench, keep it on loopback or behind your firewall rules.
