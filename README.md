@@ -44,3 +44,8 @@ Rough numbers on a Ryzen 7 laptop, loopback, 1KB payloads, single client:
 | streaming | ~1.1 GB/s |
 
 Treat these as ballparks, not guarantees — profile on your own hardware.
+
+
+## Security
+
+socketlab has no authentication — it's a lab bench. Never expose it beyond loopback. If you must, front it with mutual TLS and keep sessions short.
