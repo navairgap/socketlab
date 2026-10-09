@@ -49,3 +49,15 @@ Treat these as ballparks, not guarantees — profile on your own hardware.
 ## Security
 
 socketlab has no authentication — it's a lab bench. Never expose it beyond loopback. If you must, front it with mutual TLS and keep sessions short.
+
+
+## Getting started
+
+```bash
+git clone https://github.com/navairgap/socketlab && cd socketlab
+make          # build
+./socketlab echo &
+./socketlab client 127.0.0.1 9000
+```
+
+three terminals, one minute, working lab.
