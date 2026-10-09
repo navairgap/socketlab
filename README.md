@@ -61,3 +61,9 @@ make          # build
 ```
 
 three terminals, one minute, working lab.
+
+## Roadmap
+
+- tls mode with self-signed certs for handshake testing
+- latency histogram mode
+- scripted conversation files (send this, expect that)
