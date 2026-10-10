@@ -67,3 +67,7 @@ three terminals, one minute, working lab.
 - tls mode with self-signed certs for handshake testing
 - latency histogram mode
 - scripted conversation files (send this, expect that)
+
+## Code style
+
+C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~60 lines; if one grows past that it's two functions. PRs that add warnings get bounced by CI.
