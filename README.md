@@ -71,3 +71,7 @@ three terminals, one minute, working lab.
 ## Code style
 
 C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~60 lines; if one grows past that it's two functions. PRs that add warnings get bounced by CI.
+
+## Code style
+
+C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~60 lines; if one grows past that it's two functions. PRs that add warnings get bounced by CI.
