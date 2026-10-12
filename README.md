@@ -75,3 +75,7 @@ C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~
 ## Code style
 
 C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~60 lines; if one grows past that it's two functions. PRs that add warnings get bounced by CI.
+
+## Frame format
+
+4-byte big-endian length prefix, then payload. max frame 16MB; oversized lengths are rejected before reading. a 5-byte "hello" frame: `00 00 00 05 68 65 6c 6c 6f`.
