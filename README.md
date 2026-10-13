@@ -79,3 +79,7 @@ C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~
 ## Frame format
 
 4-byte big-endian length prefix, then payload. max frame 16MB; oversized lengths are rejected before reading. a 5-byte "hello" frame: `00 00 00 05 68 65 6c 6c 6f`.
+
+## Compatibility
+
+builds with gcc/clang on linux and macOS; windows needs the winsock shim layer and is untested — file an issue if you need it and it becomes a milestone.
