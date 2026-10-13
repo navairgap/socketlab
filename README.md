@@ -83,3 +83,7 @@ C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~
 ## Compatibility
 
 builds with gcc/clang on linux and macOS; windows needs the winsock shim layer and is untested — file an issue if you need it and it becomes a milestone.
+
+## Debugging
+
+`--verbose` prints per-frame direction and size; `--hex` adds a full payload dump. both go to stderr so stdout stays pipeable.
