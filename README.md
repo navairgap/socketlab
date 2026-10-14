@@ -87,3 +87,7 @@ builds with gcc/clang on linux and macOS; windows needs the winsock shim layer a
 ## Debugging
 
 `--verbose` prints per-frame direction and size; `--hex` adds a full payload dump. both go to stderr so stdout stays pipeable.
+
+## Design goals
+
+length-prefixed framing because boundaries matter more than features: a receiver always knows how much to read, streams stay unambiguous, and the parser is 30 lines. everything else followed from that choice.
