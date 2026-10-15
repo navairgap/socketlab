@@ -91,3 +91,7 @@ builds with gcc/clang on linux and macOS; windows needs the winsock shim layer a
 ## Design goals
 
 length-prefixed framing because boundaries matter more than features: a receiver always knows how much to read, streams stay unambiguous, and the parser is 30 lines. everything else followed from that choice.
+
+## Releases
+
+tags mark wire-format changes only. the tool itself follows main; there is no release train because there is nothing to ship — it is a bench, not a product.
