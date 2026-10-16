@@ -95,3 +95,7 @@ length-prefixed framing because boundaries matter more than features: a receiver
 ## Releases
 
 tags mark wire-format changes only. the tool itself follows main; there is no release train because there is nothing to ship — it is a bench, not a product.
+
+## History
+
+built to answer a specific question — 'how do length-prefixed frames actually behave under fragmentation?' — and kept because the answer deserved a reusable bench.
