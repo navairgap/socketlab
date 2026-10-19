@@ -1,101 +1,41 @@
 # socketlab
 
-WebSocket experiments: rooms, pub/sub, backpressure
+A planned test bench for experimenting with TCP framing, WebSocket behavior, and slow-client handling.
 
-> 🚧 **Status: planning** — architecture and README first, code next.
+> **Status: design stage.** This repository currently contains documentation only; the server, client, and load tests are not implemented yet.
 
-## Why
+## Goal
 
-banter proved the basics; socketlab pushes deeper — presence at scale, backpressure handling, horizontal scaling with Redis adapters, and message delivery guarantees. A reference codebase for real-time architecture.
+Make protocol edge cases reproducible with small commands and fixtures rather than relying on a production service to expose them.
 
-## Planned features
+## Initial experiments
 
-- Room sharding and horizontal scaling via Redis adapter
-- Backpressure: slow clients, buffering policies, dropped-message metrics
-- Delivery semantics: at-most-once vs at-least-once patterns
-- Load-test harness: 10k concurrent sockets on one box
+- TCP echo client/server with explicit framing.
+- Tests that split a frame header or payload across multiple reads.
+- Tests for oversized lengths, early disconnects, and partial writes.
+- A slow-client mode to observe backpressure and bounded buffering.
+- Optional WebSocket experiments after the TCP harness is stable.
 
-## Stack
+## Safety
 
-`node.js` `socket.io` `redis` `artillery`
+- Bind to loopback by default.
+- Require an explicit option to listen on a non-loopback interface.
+- Set maximum frame size, connection count, and idle timeout.
+- Never interpret received bytes as commands or write received files to disk.
+- Keep load tests opt-in and explain their resource requirements.
 
-## Notes
+## Planned milestones
 
-Each experiment is its own folder with a README and repro steps.
+- [ ] Specify framing and error behavior.
+- [ ] Implement an echo server and client.
+- [ ] Add fragmentation and malformed-frame tests.
+- [ ] Add backpressure metrics and a reproducible load-test recipe.
+- [ ] Document platform support based on actual CI results.
+
+## Measurements
+
+No throughput figures are published yet. Any future benchmark should include hardware, compiler/runtime version, payload size, concurrency, and exact command line.
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
-
----
-maintained · verified 2026-09-30
-
-## Protocol notes
-
-socketlab speaks plain length-prefixed frames over TCP: a 4-byte big-endian length header followed by the payload. No handshake, no auth — it's a test bench, keep it on loopback or behind your firewall rules.
-
-## Benchmarks
-
-Rough numbers on a Ryzen 7 laptop, loopback, 1KB payloads, single client:
-
-| mode | throughput |
-| --- | --- |
-| echo | ~180k msg/s |
-| streaming | ~1.1 GB/s |
-
-Treat these as ballparks, not guarantees — profile on your own hardware.
-
-
-## Security
-
-socketlab has no authentication — it's a lab bench. Never expose it beyond loopback. If you must, front it with mutual TLS and keep sessions short.
-
-
-## Getting started
-
-```bash
-git clone https://github.com/navairgap/socketlab && cd socketlab
-make          # build
-./socketlab echo &
-./socketlab client 127.0.0.1 9000
-```
-
-three terminals, one minute, working lab.
-
-## Roadmap
-
-- tls mode with self-signed certs for handshake testing
-- latency histogram mode
-- scripted conversation files (send this, expect that)
-
-## Code style
-
-C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~60 lines; if one grows past that it's two functions. PRs that add warnings get bounced by CI.
-
-## Code style
-
-C99, `-Wall -Wextra -Werror` clean, no warnings accepted. functions stay under ~60 lines; if one grows past that it's two functions. PRs that add warnings get bounced by CI.
-
-## Frame format
-
-4-byte big-endian length prefix, then payload. max frame 16MB; oversized lengths are rejected before reading. a 5-byte "hello" frame: `00 00 00 05 68 65 6c 6c 6f`.
-
-## Compatibility
-
-builds with gcc/clang on linux and macOS; windows needs the winsock shim layer and is untested — file an issue if you need it and it becomes a milestone.
-
-## Debugging
-
-`--verbose` prints per-frame direction and size; `--hex` adds a full payload dump. both go to stderr so stdout stays pipeable.
-
-## Design goals
-
-length-prefixed framing because boundaries matter more than features: a receiver always knows how much to read, streams stay unambiguous, and the parser is 30 lines. everything else followed from that choice.
-
-## Releases
-
-tags mark wire-format changes only. the tool itself follows main; there is no release train because there is nothing to ship — it is a bench, not a product.
-
-## History
-
-built to answer a specific question — 'how do length-prefixed frames actually behave under fragmentation?' — and kept because the answer deserved a reusable bench.
+MIT. See [LICENSE](LICENSE).
