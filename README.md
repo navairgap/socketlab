@@ -39,3 +39,8 @@ No throughput figures are published yet. Any future benchmark should include har
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+
+## Safe lab defaults
+
+Bind test services to loopback by default, use finite timeouts and maximum frame sizes, and keep load tests bounded. Use ephemeral ports in automated tests and close sockets on success, error, and cancellation.
