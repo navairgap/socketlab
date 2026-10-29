@@ -27,3 +27,7 @@ A frame consists of a 4-byte unsigned big-endian payload length followed by exac
 ## Safety
 
 Bind to loopback by default. Any non-loopback listener should require an explicit option and clear warning. Tests must use local sockets and close all resources deterministically.
+
+## Error reporting contract
+
+Frame errors should identify the connection, parser phase, and byte offset without echoing attacker-controlled payload bytes. Distinguish a clean close between frames from EOF during a header or payload. Once a framing violation occurs, close that connection and release its buffered data; do not attempt to resynchronize by scanning arbitrary payload bytes for a plausible length prefix. Keep diagnostics bounded and deterministic for tests.
