@@ -31,3 +31,7 @@ Bind to loopback by default. Any non-loopback listener should require an explici
 ## Error reporting contract
 
 Frame errors should identify the connection, parser phase, and byte offset without echoing attacker-controlled payload bytes. Distinguish a clean close between frames from EOF during a header or payload. Once a framing violation occurs, close that connection and release its buffered data; do not attempt to resynchronize by scanning arbitrary payload bytes for a plausible length prefix. Keep diagnostics bounded and deterministic for tests.
+
+## Deadline ownership
+
+Use separate, documented deadlines for completing a frame header, completing its payload, and remaining idle between frames. Reset the appropriate deadline only when bytes relevant to that phase arrive; unrelated activity on another connection must not extend it. A timeout should release that connection's buffered bytes and leave the listener available to other clients. Tests should use an injected clock or short deterministic deadlines, not long sleeps.
