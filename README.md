@@ -1,46 +1,34 @@
 # socketlab
 
-A planned test bench for experimenting with TCP framing, WebSocket behavior, and slow-client handling.
+A loopback-first test bench for TCP framing and WebSocket behavior.
 
-> **Status: design stage.** This repository currently contains documentation only; the server, client, and load tests are not implemented yet.
+> **Current state: TCP frame-decoder prototype.** The first implementation is a dependency-free incremental decoder for four-byte big-endian length-prefixed frames. There is no listener, WebSocket service, or load generator yet.
 
-## Goal
+## Framing prototype
 
-Make protocol edge cases reproducible with small commands and fixtures rather than relying on a production service to expose them.
+The decoder accepts arbitrary TCP chunks, including split headers, split payloads, and multiple frames in one read. It rejects oversized declarations before buffering payload bytes and distinguishes clean EOF from EOF during a header or payload. A protocol error makes that decoder instance unusable; callers should close the affected connection rather than attempting to resynchronize on arbitrary payload bytes.
 
-## Initial experiments
+Run the focused tests with:
 
-- TCP echo client/server with explicit framing.
-- Tests that split a frame header or payload across multiple reads.
-- Tests for oversized lengths, early disconnects, and partial writes.
-- A slow-client mode to observe backpressure and bounded buffering.
-- Optional WebSocket experiments after the TCP harness is stable.
+    python -m unittest discover -s tests -v
 
-## Safety
+## Safety defaults
 
-- Bind to loopback by default.
-- Require an explicit option to listen on a non-loopback interface.
-- Set maximum frame size, connection count, and idle timeout.
+- Bind test services to loopback by default.
+- Keep frame size and connection count bounded.
+- Use finite deadlines for header, payload, and idle phases.
 - Never interpret received bytes as commands or write received files to disk.
-- Keep load tests opt-in and explain their resource requirements.
+- Keep load tests opt-in and use ephemeral ports in automated tests.
 
-## Planned milestones
+## Remaining work
 
-- [ ] Specify framing and error behavior.
-- [ ] Implement an echo server and client.
-- [ ] Add fragmentation and malformed-frame tests.
-- [ ] Add backpressure metrics and a reproducible load-test recipe.
-- [ ] Document platform support based on actual CI results.
+- [ ] Add a loopback echo server and client.
+- [ ] Add deterministic header, payload, and idle deadlines.
+- [ ] Add bounded connection management and backpressure metrics.
+- [ ] Add WebSocket experiments after the TCP harness is stable.
 
-## Measurements
-
-No throughput figures are published yet. Any future benchmark should include hardware, compiler/runtime version, payload size, concurrency, and exact command line.
+No throughput figures are published. Any future benchmark must record hardware, runtime version, payload size, concurrency, and exact command line.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-
-## Safe lab defaults
-
-Bind test services to loopback by default, use finite timeouts and maximum frame sizes, and keep load tests bounded. Use ephemeral ports in automated tests and close sockets on success, error, and cancellation.
