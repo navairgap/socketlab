@@ -49,6 +49,7 @@ class FrameDecoder:
         self._buffer = bytearray()
         self._expected_payload: int | None = None
         self._failed = False
+        self._finished = False
 
     @property
     def buffered_bytes(self) -> int:
@@ -57,6 +58,8 @@ class FrameDecoder:
     def feed(self, data: bytes | bytearray | memoryview) -> list[bytes]:
         if self._failed:
             raise FrameProtocolError("decoder is unusable after a framing error")
+        if self._finished:
+            raise FrameProtocolError("decoder has already been finished")
         if not isinstance(data, (bytes, bytearray, memoryview)):
             raise TypeError("data must be bytes-like")
 
@@ -101,7 +104,10 @@ class FrameDecoder:
         """Mark EOF; raise when a header or payload is incomplete."""
         if self._failed:
             raise FrameProtocolError("decoder is unusable after a framing error")
+        if self._finished:
+            return
         if self._expected_payload is None and not self._buffer:
+            self._finished = True
             return
         self._failed = True
         if self._expected_payload is None:
