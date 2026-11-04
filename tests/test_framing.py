@@ -1,7 +1,7 @@
 import unittest
 
 from socketlab.framing import (
-    FrameDecoder, FrameTooLarge, TruncatedFrame, encode_frame,
+    FrameDecoder, FrameProtocolError, FrameTooLarge, TruncatedFrame, encode_frame,
 )
 
 
@@ -41,6 +41,14 @@ class FrameDecoderTests(unittest.TestCase):
             payload.finish()
         self.assertEqual(caught.exception.phase, "payload")
         self.assertEqual((caught.exception.received, caught.exception.expected), (2, 4))
+
+    def test_clean_eof_is_terminal_and_finish_is_idempotent(self):
+        decoder = FrameDecoder()
+        self.assertEqual(decoder.feed(encode_frame(b"done")), [b"done"])
+        decoder.finish()
+        decoder.finish()
+        with self.assertRaises(FrameProtocolError):
+            decoder.feed(encode_frame(b"after-eof"))
 
     def test_oversized_length_is_rejected_before_payload(self):
         decoder = FrameDecoder(max_frame_size=8)
